@@ -7,7 +7,7 @@ public class ApplicationUser: ITrackedEntity
     public string ApplicationUserName { get; set; }
 
     public Guid StoreMembershipId { get; set; }
-    public virtual StoreMembership Membership { get; set; }
+    public virtual StoreMembership StoreMembership { get; set; }
     
     public virtual ICollection<ShoppingCart> ShoppingCarts { get; set; }
 }

@@ -89,6 +89,7 @@ public class ShoppingCartService : IShoppingCartService
         var response = new UpdateShoppingCartResponse
         {
             ShoppingCartId = cart.ShoppingCartId,
+            Discount = cart.Owner.StoreMembership.Discount,
             Items = cart.ShoppingCartItems.Select(i => new ShoppingCartItemResponse
             {
                 ShoppingCartItemId = i.ShoppingCartItemId,
