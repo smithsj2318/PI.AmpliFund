@@ -12,4 +12,8 @@
         <PackageReference Include="FluentValidation" Version="11.10.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\PI.AmpliFund.Data\PI.AmpliFund.Data.csproj" />
+    </ItemGroup>
+
 </Project>
