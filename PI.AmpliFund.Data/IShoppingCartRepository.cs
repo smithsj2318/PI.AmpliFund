@@ -8,4 +8,5 @@ public interface IShoppingCartRepository
     Product RetrieveProduct(string payloadProductSku);
     ShoppingCartItem CreateShoppingCartItem(ShoppingCartItem newCartItem);
     void DeleteShoppingCartItem(ShoppingCartItem cartItem);
+    void SaveChanges();
 }

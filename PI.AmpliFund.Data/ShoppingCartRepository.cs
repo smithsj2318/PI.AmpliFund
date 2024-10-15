@@ -50,4 +50,9 @@ public class ShoppingCartRepository : IShoppingCartRepository
         _context.ShoppingCartItem.Remove(cartItem);
         _context.SaveChanges();
     }
+
+    public void SaveChanges()
+    {
+        _context.SaveChanges();
+    }
 }

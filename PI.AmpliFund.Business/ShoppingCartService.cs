@@ -56,14 +56,21 @@ public class ShoppingCartService : IShoppingCartService
             return Result<UpdateShoppingCartResponse>.NotFound();
         }
 
-        if (payload.Quantity <= 0)
+        
+        if (cart.ShoppingCartItems.Any(i => i.Product.ProductSku == payload.ProductSku))
         {
-            if (cart.ShoppingCartItems.Any(i => i.Product.ProductSku == payload.ProductSku))
+            var existingCartItem = cart.ShoppingCartItems.First(i => i.Product.ProductSku == payload.ProductSku);
+            if (payload.Quantity <= 0)
             {
-                var itemToRemove = cart.ShoppingCartItems.First(i => i.Product.ProductSku == payload.ProductSku);
-                _repository.DeleteShoppingCartItem(itemToRemove);
-                return CreateResponse(cart);
+                _repository.DeleteShoppingCartItem(existingCartItem);
             }
+            else
+            {
+                existingCartItem.Quantity += payload.Quantity;
+                _repository.SaveChanges();
+            }
+            
+            return CreateResponse(cart);
         }
         
         var product = _repository.RetrieveProduct(payload.ProductSku);
@@ -95,7 +102,8 @@ public class ShoppingCartService : IShoppingCartService
                 ShoppingCartItemId = i.ShoppingCartItemId,
                 ProductSku = i.Product.ProductSku,
                 Quantity = i.Quantity,
-                Price = i.Product.Price
+                Price = i.Product.Price,
+                Description = i.Product.Description
             }).ToList()
         };
         return Result<UpdateShoppingCartResponse>.Success(response);
