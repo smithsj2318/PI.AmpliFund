@@ -45,7 +45,7 @@ public class ShoppingCartService : IShoppingCartService
 
     }
 
-    public Result<UpdateShoppingCartResponse> UpdateShoppingCart(Guid shoppingCartId, UpdateShoppingCartPayload payload)
+    public Result<ShoppingCartResponse> UpdateShoppingCart(Guid shoppingCartId, UpdateShoppingCartPayload payload)
     {
         //
         //Need better validation here.
@@ -53,7 +53,7 @@ public class ShoppingCartService : IShoppingCartService
         var cart = _repository.RetrieveShoppingCart(shoppingCartId);
         if (cart is null)
         {
-            return Result<UpdateShoppingCartResponse>.NotFound();
+            return Result<ShoppingCartResponse>.NotFound();
         }
 
         
@@ -76,7 +76,7 @@ public class ShoppingCartService : IShoppingCartService
         var product = _repository.RetrieveProduct(payload.ProductSku);
         if (product is null)
         {
-            return Result<UpdateShoppingCartResponse>.Invalid(new ValidationError("Product Not Found"));
+            return Result<ShoppingCartResponse>.Invalid(new ValidationError("Product Not Found"));
         }
         
         var newCartItem = new ShoppingCartItem
@@ -91,9 +91,20 @@ public class ShoppingCartService : IShoppingCartService
         return CreateResponse(cart);
     }
 
-    private static Result<UpdateShoppingCartResponse> CreateResponse(ShoppingCart cart)
+    public Result<ShoppingCartResponse> RetrieveShoppingCart(Guid shoppingCartId)
     {
-        var response = new UpdateShoppingCartResponse
+        var cart = _repository.RetrieveShoppingCart(shoppingCartId);
+        if (cart is null)
+        {
+            return Result<ShoppingCartResponse>.NotFound();
+        }
+        
+        return CreateResponse(cart);
+    }
+
+    private static Result<ShoppingCartResponse> CreateResponse(ShoppingCart cart)
+    {
+        var response = new ShoppingCartResponse
         {
             ShoppingCartId = cart.ShoppingCartId,
             Discount = cart.Owner.StoreMembership.Discount,
@@ -106,6 +117,6 @@ public class ShoppingCartService : IShoppingCartService
                 Description = i.Product.Description
             }).ToList()
         };
-        return Result<UpdateShoppingCartResponse>.Success(response);
+        return Result<ShoppingCartResponse>.Success(response);
     }
 }

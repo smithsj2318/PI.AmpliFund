@@ -43,4 +43,16 @@ public class ShoppingCartController: ControllerBase
         
         return Ok(result.Value);
     }
+    
+    [HttpGet("{shoppingCartId}")]
+    public IActionResult Get(Guid shoppingCartId)
+    {
+        var result = _shoppingCartService.RetrieveShoppingCart(shoppingCartId);
+        if (result.IsNotFound())
+        {
+            return NotFound();
+        }
+        
+        return Ok(result.Value);
+    }
 }
