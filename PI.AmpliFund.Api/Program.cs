@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<ShoppingCartContext>(options => options.UseSqlServer("Server=localhost, 1433;Database=PI.Amplifund;MultipleActiveResultSets=true; User Id=sa; Password=loc@lD0ck3rPassw0rd;"));
+builder.Services.AddDbContext<ShoppingCartContext>(options => options.UseLazyLoadingProxies().UseSqlServer("Server=localhost, 1433;Database=PI.Amplifund; User Id=sa; Password=loc@lD0ck3rPassw0rd;"));
 builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 builder.Services.AddScoped<IValidator<CreateShoppingCartPayload>, PostPayloadValidator>();
 builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
