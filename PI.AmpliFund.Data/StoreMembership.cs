@@ -6,4 +6,6 @@ public class StoreMembership: ITrackedEntity
     public byte[] RowVersion { get; set; }
     public string Description { get; set; }
     public float Discount { get; set; }
+    
+    public virtual IEnumerable<ApplicationUser> ApplicationUsers { get; set; } = null!;
 }

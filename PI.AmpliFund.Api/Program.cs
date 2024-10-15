@@ -1,3 +1,8 @@
+using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using PI.AmpliFund.Business;
+using PI.AmpliFund.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +11,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<ShoppingCartContext>(options => options.UseSqlServer("Server=localhost, 1433;Database=PI.Amplifund;MultipleActiveResultSets=true; User Id=sa; Password=loc@lD0ck3rPassw0rd;"));
+builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
+builder.Services.AddScoped<IValidator<CreateShoppingCartPayload>, PostPayloadValidator>();
+builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
 
 var app = builder.Build();
 
