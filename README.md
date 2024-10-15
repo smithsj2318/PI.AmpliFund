@@ -10,3 +10,4 @@ Some things I would have liked to do if I had more time:
 - Add error handling
 - Add logging
 - Add more\better validation
+- Done something more secure with the DB Connection string.
