@@ -44,4 +44,59 @@ public class ShoppingCartService : IShoppingCartService
         return Result<CreateShoppingCartResponse>.Success(response);
 
     }
+
+    public Result<UpdateShoppingCartResponse> UpdateShoppingCart(Guid shoppingCartId, UpdateShoppingCartPayload payload)
+    {
+        //
+        //Need better validation here.
+        //
+        var cart = _repository.RetrieveShoppingCart(shoppingCartId);
+        if (cart is null)
+        {
+            return Result<UpdateShoppingCartResponse>.NotFound();
+        }
+
+        if (payload.Quantity <= 0)
+        {
+            if (cart.ShoppingCartItems.Any(i => i.Product.ProductSku == payload.ProductSku))
+            {
+                var itemToRemove = cart.ShoppingCartItems.First(i => i.Product.ProductSku == payload.ProductSku);
+                _repository.DeleteShoppingCartItem(itemToRemove);
+                return CreateResponse(cart);
+            }
+        }
+        
+        var product = _repository.RetrieveProduct(payload.ProductSku);
+        if (product is null)
+        {
+            return Result<UpdateShoppingCartResponse>.Invalid(new ValidationError("Product Not Found"));
+        }
+        
+        var newCartItem = new ShoppingCartItem
+        {
+            ShoppingCart = cart,
+            Product = product,
+            Quantity = payload.Quantity
+        };
+        
+        _repository.CreateShoppingCartItem(newCartItem);
+        
+        return CreateResponse(cart);
+    }
+
+    private static Result<UpdateShoppingCartResponse> CreateResponse(ShoppingCart cart)
+    {
+        var response = new UpdateShoppingCartResponse
+        {
+            ShoppingCartId = cart.ShoppingCartId,
+            Items = cart.ShoppingCartItems.Select(i => new ShoppingCartItemResponse
+            {
+                ShoppingCartItemId = i.ShoppingCartItemId,
+                ProductSku = i.Product.ProductSku,
+                Quantity = i.Quantity,
+                Price = i.Product.Price
+            }).ToList()
+        };
+        return Result<UpdateShoppingCartResponse>.Success(response);
+    }
 }

@@ -15,7 +15,13 @@ public class ShoppingCartContext: DbContext
             .Property(sc => sc.RowVersion)
             .IsRowVersion();
 
+        modelBuilder.Entity<ShoppingCartItem>()
+            .Property(sc => sc.RowVersion)
+            .IsRowVersion();
     }
     public virtual DbSet<ApplicationUser> ApplicationUser { get; set; }
     public virtual DbSet<ShoppingCart> ShoppingCart { get; set; }
+    public virtual DbSet<ShoppingCartItem> ShoppingCartItem { get; set; }
+    public virtual DbSet<Product> Product { get; set; }
+    public virtual DbSet<StoreMembership> StoreMembership { get; set; }
 }

@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace PI.AmpliFund.Data;
 
 
@@ -22,5 +24,30 @@ public class ShoppingCartRepository : IShoppingCartRepository
         _context.SaveChanges();
         
         return shoppingCart;
+    }
+
+    public ShoppingCart RetrieveShoppingCart(Guid shoppingCartId)
+    {
+        return _context.ShoppingCart //.Include(s => s.ShoppingCartItems)
+                                    .FirstOrDefault(s => s.ShoppingCartId == shoppingCartId)!;
+    }
+
+    public Product RetrieveProduct(string payloadProductSku)
+    {
+        return _context.Product.FirstOrDefault(p => p.ProductSku == payloadProductSku)!;
+    }
+
+    public ShoppingCartItem CreateShoppingCartItem(ShoppingCartItem newCartItem)
+    {
+        _context.ShoppingCartItem.Add(newCartItem);
+        _context.SaveChanges();
+
+        return newCartItem;
+    }
+    
+    public void DeleteShoppingCartItem(ShoppingCartItem cartItem)
+    {
+        _context.ShoppingCartItem.Remove(cartItem);
+        _context.SaveChanges();
     }
 }

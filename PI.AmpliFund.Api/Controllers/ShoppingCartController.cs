@@ -26,4 +26,21 @@ public class ShoppingCartController: ControllerBase
         
         return Ok(result.Value);
     }
+    
+    [HttpPut("{shoppingCartId}")]
+    public IActionResult Put(Guid shoppingCartId, [FromBody] UpdateShoppingCartPayload payload)
+    {
+        var result = _shoppingCartService.UpdateShoppingCart(shoppingCartId, payload);
+        if (result.IsInvalid())
+        {
+            return BadRequest(result.ValidationErrors);
+        }
+
+        if (result.IsNotFound())
+        {
+            return NotFound();
+        }
+        
+        return Ok(result.Value);
+    }
 }
