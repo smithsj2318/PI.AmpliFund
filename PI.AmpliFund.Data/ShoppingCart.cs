@@ -7,5 +7,5 @@ public class ShoppingCart
     public Guid ApplicationUserId { get; set; }
     public virtual ApplicationUser Owner { get; set; }
     
-    public virtual ICollection<ShoppingCartItem> ShoppingCartItems { get; set; } = null!;
+    public virtual ICollection<ShoppingCartItem> ShoppingCartItems { get; set; } = new List<ShoppingCartItem>();
 }

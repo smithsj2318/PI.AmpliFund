@@ -17,31 +17,27 @@ public class ShoppingCartService : IShoppingCartService
         _repository = shoppingCartRepository;
     }
 
-    public Result<CreateShoppingCartResponse> CreateShoppingCart(CreateShoppingCartPayload payload)
+    public Result<ShoppingCartResponse> CreateShoppingCart(CreateShoppingCartPayload payload)
     {
         var validationResult = _validator.Validate(payload);
         if (!validationResult.IsValid)
         {
-            return Result<CreateShoppingCartResponse>.Invalid(validationResult.AsErrors());
+            return Result<ShoppingCartResponse>.Invalid(validationResult.AsErrors());
         }
         
         var cartOwner = _repository.RetrieveApplicationUser(payload.ApplicationUserName);
         if (cartOwner is null)
         {
-            return Result<CreateShoppingCartResponse>.Invalid(new ValidationError("User Not Found"));
+            return Result<ShoppingCartResponse>.Invalid(new ValidationError("User Not Found"));
         }
         
         var cartToCreate = new ShoppingCart
         {
             Owner = cartOwner
         };
+        
         var newlyCreatedCart = _repository.CreateShoppingCart(cartToCreate);
-
-        var response = new CreateShoppingCartResponse
-        {
-            ShoppingCartId = newlyCreatedCart.ShoppingCartId
-        };
-        return Result<CreateShoppingCartResponse>.Success(response);
+        return CreateResponse(newlyCreatedCart);
 
     }
 

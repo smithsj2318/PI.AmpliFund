@@ -23,7 +23,7 @@ public class ShoppingCartControllerTests
         _fixture = new Fixture();
         _shoppingCartService = Substitute.For<IShoppingCartService>();
         _shoppingCartService.CreateShoppingCart(Arg.Any<CreateShoppingCartPayload>())
-                            .Returns(Result<CreateShoppingCartResponse>.Success(_fixture.Create<CreateShoppingCartResponse>()));
+                            .Returns(Result<ShoppingCartResponse>.Success(_fixture.Create<ShoppingCartResponse>()));
         
         _sut = new ShoppingCartController(_shoppingCartService);
         
@@ -44,7 +44,7 @@ public class ShoppingCartControllerTests
     public void Post_Handles_Invalid_Payload_Test()
     {
         var expectedMessages = _fixture.CreateMany<ValidationError>().ToList();
-        var cartResponse = Result<CreateShoppingCartResponse>.Invalid(expectedMessages);
+        var cartResponse = Result<ShoppingCartResponse>.Invalid(expectedMessages);
         _shoppingCartService.CreateShoppingCart(Arg.Any<CreateShoppingCartPayload>())
                             .Returns(cartResponse);
         
@@ -61,8 +61,8 @@ public class ShoppingCartControllerTests
     [Fact]
     public void Post_Returns_Created_ShoppingCart_Test()
     {
-        var expectedResponse = _fixture.Create<CreateShoppingCartResponse>();
-        var cartResponse = Result<CreateShoppingCartResponse>.Success(expectedResponse);
+        var expectedResponse = _fixture.Create<ShoppingCartResponse>();
+        var cartResponse = Result<ShoppingCartResponse>.Success(expectedResponse);
         _shoppingCartService.CreateShoppingCart(Arg.Any<CreateShoppingCartPayload>())
                             .Returns(cartResponse);
         

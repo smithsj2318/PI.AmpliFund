@@ -24,6 +24,10 @@ public class ShoppingCartServiceTests
     {
         _fixture = new Fixture();
         
+        _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+            .ForEach(b => _fixture.Behaviors.Remove(b));
+        _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        
         _validator = Substitute.For<IValidator<CreateShoppingCartPayload>>();
         _validator.Validate(Arg.Any<CreateShoppingCartPayload>())
                   .Returns(new ValidationResult());
