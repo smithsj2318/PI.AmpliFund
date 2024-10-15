@@ -22,6 +22,8 @@ public class ShoppingCartControllerTests
     {
         _fixture = new Fixture();
         _shoppingCartService = Substitute.For<IShoppingCartService>();
+        _shoppingCartService.CreateShoppingCart(Arg.Any<CreateShoppingCartPayload>())
+                            .Returns(Result<CreateShoppingCartResponse>.Success(_fixture.Create<CreateShoppingCartResponse>()));
         
         _sut = new ShoppingCartController(_shoppingCartService);
         
@@ -39,7 +41,7 @@ public class ShoppingCartControllerTests
     }
 
     [Fact]
-    public void Post_Handles_Invalid_Test()
+    public void Post_Handles_Invalid_Payload_Test()
     {
         var expectedMessages = _fixture.CreateMany<ValidationError>().ToList();
         var cartResponse = Result<CreateShoppingCartResponse>.Invalid(expectedMessages);
@@ -53,6 +55,24 @@ public class ShoppingCartControllerTests
             result.Should().NotBeNull()
                            .And.BeOfType<BadRequestObjectResult>()
                                .Which.Value.Should().BeEquivalentTo(expectedMessages);
+        }
+    }
+    
+    [Fact]
+    public void Post_Returns_Created_ShoppingCart_Test()
+    {
+        var expectedResponse = _fixture.Create<CreateShoppingCartResponse>();
+        var cartResponse = Result<CreateShoppingCartResponse>.Success(expectedResponse);
+        _shoppingCartService.CreateShoppingCart(Arg.Any<CreateShoppingCartPayload>())
+                            .Returns(cartResponse);
+        
+        var result = _sut.Post(_arbitaryPayload);
+
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull()
+                           .And.BeOfType<OkObjectResult>()
+                               .Which.Value.Should().Be(expectedResponse);
         }
     }
 }

@@ -23,6 +23,7 @@ public class ShoppingCartController: ControllerBase
         {
             return BadRequest(result.ValidationErrors);
         }
-        return Ok(new CreateShoppingCartResponse { ShoppingCartId = Guid.NewGuid() });
+        
+        return Ok(result.Value);
     }
 }
